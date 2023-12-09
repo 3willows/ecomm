@@ -26,7 +26,6 @@ app.post('/', bodyParser.urlencoded({extended: true}), (req, res) => {
   res.send("account created")
 })
 
-
 app.listen(3000, () => {
   console.log('nodemon is listening!');
 })
