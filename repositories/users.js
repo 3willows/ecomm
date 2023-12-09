@@ -26,25 +26,31 @@ class UsersRepository {
     return data;
   }
 
-  async create(attributes){
+  async create(attributes) {
     const records = await this.getAll();
     records.push(attributes);
-    await fs.promises.writeFile(this.filename, JSON.stringify(records), {econding: 'utf8'});
+    await this.writeAll(records);
   }
+
+  async writeAll(records){
+    await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));    
+  }
+
 }
 
 const test = async () => {
   const repo = new UsersRepository('users.json');
 
   const users = await repo.getAll();
- 
-  console.log(users);
 
-  await repo.create({email: ... @ ... password: ...});
+  console.log(`before: ${JSON.stringify(users)}`);
+  
+
+  await repo.create({ email: "... @ ...", password: "..."});
 
   const updatedUsers = await repo.getAll(); // Fetch updated users
 
-  console.log(updatedUsers); // Log the updated users
+  console.log(`after: ${JSON.stringify(updatedUsers)}`); // Log the updated users
 }
 
-test()
+test();
