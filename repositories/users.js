@@ -79,27 +79,4 @@ class UsersRepository {
   }
 }
 
-const test = async () => {
-  const repo = new UsersRepository('users.json');
-
-  const users = await repo.getAll();
-
-  // console.log(`before: ${JSON.stringify(users)}`);
-
-  // await repo.create({ email: "... @ ...", password: "..." });
-
-  // await repo.update("2d8ae5a529", { email: "merry @ Christmas", password: "..." });
-
-  // const updatedUsers = await repo.getAll(); 
-
-  // console.log(`after: ${JSON.stringify(updatedUsers)}`); 
-
-  // await repo.delete("1519c66e3b")
-
-  // console.log(await repo.getOne("a647da2eaf"));
-
-  console.log(await repo.getOneBy({"password": "mypassword" }));
-
-}
-
-test();
+module.exports = new UsersRepository('users.json');

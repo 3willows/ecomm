@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser')
+const usersRepo = require('./repositories/users');
+const users = require('./repositories/users');
 
 // app is the object we will be modified
 
@@ -20,9 +22,17 @@ app.get('/', (req, res) => {
   `);
 })
 
+app.post('/', bodyParser.urlencoded({extended: true}), async (req, res) => {
+  const {email, password, passwordConfirmation} = req.body;
 
-app.post('/', bodyParser.urlencoded({extended: true}), (req, res) => {
-  console.log(req.body);
+  const existingUser = await usersRepo.getOneBy({email });
+  if (existingUser){
+    return res.send('Email in use');
+  }
+
+  if (password !== passwordConfirmation){
+    return res.send('Passwords must macth');
+  }
   res.send("account created")
 })
 
