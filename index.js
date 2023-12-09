@@ -2,16 +2,22 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const usersRepo = require('./repositories/users');
 const users = require('./repositories/users');
-
+const cookieSession = require('cookie-session');
 // app is the object we will be modified
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieSession({
+  keys: ['asdfsadfsadf']
+}))
+
 // add route handler
 // req is info from users.  Res is info from server from use.
-app.get('/', (req, res) => {
+app.get('/signup', (req, res) => {
   res.send(`
   <div>
+  your id is: ${req.session.userId}
     <form method="POST">
       <input name ="email" placeholder="email" />
       <input name ="password" placeholder="password" />
@@ -22,18 +28,58 @@ app.get('/', (req, res) => {
   `);
 })
 
-app.post('/', bodyParser.urlencoded({extended: true}), async (req, res) => {
-  const {email, password, passwordConfirmation} = req.body;
+app.post('/signup', async (req, res) => {
+  const { email, password, passwordConfirmation } = req.body;
 
-  const existingUser = await usersRepo.getOneBy({email });
-  if (existingUser){
+  const existingUser = await usersRepo.getOneBy({ email });
+  if (existingUser) {
     return res.send('Email in use');
   }
 
-  if (password !== passwordConfirmation){
+  if (password !== passwordConfirmation) {
     return res.send('Passwords must macth');
   }
+
+  const user = await usersRepo.create({ email, password });
+
+  req.session.userId = user.id;
+
+  console.log(req.session.userId);
+
   res.send("account created")
+})
+
+app.get('/signout', (req, res) => {
+  req.session = null;
+  res.send("you're logged out")
+})
+
+app.get('/signin', (req, res) => {
+  res.send(`<div>
+    <form method="POST">
+    <h> SIGN IN PAGE </h> <br>
+    <input name ="email" placeholder="email" />
+      <input name ="password" placeholder="password" />
+      <button>Sign In</button>
+    </form>
+  </div>`);
+})
+
+app.post('/signin', async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await usersRepo.getOneBy({ email });
+
+
+  if (!user) {
+    return res.send(`no such person try again`);
+  }
+
+  if (user.password !== password) {
+    return res.send(`wrong password try again`);
+  }
+
+  return res.send(`you are singed in`)
 })
 
 app.listen(3000, () => {
