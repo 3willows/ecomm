@@ -51,14 +51,31 @@ class UsersRepository {
     await this.writeAll(filteredRecords);
   }
 
-  async update(id, attributes){
+  async update(id, attributes) {
     const records = await this.getAll();
     const record = records.find(record => record.id === id);
-    if (!record){
+    if (!record) {
       throw new Error(`Record with id ${id} not found`);
     }
     Object.assign(record, attributes);
     await this.writeAll(records);
+  }
+
+  async getOneBy(filters) {
+    const records = await this.getAll();
+
+    for (let record of records) {
+    let found = true;
+      for (let key in filters) {
+        // console.log(record[key]);
+        // console.log(filters[key]);
+        if (record[key] !== filters[key])
+          found = false;
+      }
+      if (found) {
+        return record;
+      }
+    }
   }
 }
 
@@ -67,11 +84,11 @@ const test = async () => {
 
   const users = await repo.getAll();
 
-  console.log(`before: ${JSON.stringify(users)}`);
+  // console.log(`before: ${JSON.stringify(users)}`);
 
-  await repo.create({ email: "... @ ...", password: "..." });
+  // await repo.create({ email: "... @ ...", password: "..." });
 
-  await repo.update("2d8ae5a529", { email: "merry @ Christmas", password: "..." });
+  // await repo.update("2d8ae5a529", { email: "merry @ Christmas", password: "..." });
 
   // const updatedUsers = await repo.getAll(); 
 
@@ -80,6 +97,9 @@ const test = async () => {
   // await repo.delete("1519c66e3b")
 
   // console.log(await repo.getOne("a647da2eaf"));
+
+  console.log(await repo.getOneBy({"password": "mypassword" }));
+
 }
 
 test();
