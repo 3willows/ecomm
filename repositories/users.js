@@ -1,7 +1,5 @@
-const { isUtf8 } = require('buffer');
 const fs = require('fs');
-const { stringify } = require('querystring');
-
+const crypto = require('crypto');
 class UsersRepository {
   constructor(filename) {
     if (!filename) {
@@ -27,6 +25,8 @@ class UsersRepository {
   }
 
   async create(attributes) {
+    attributes.id = this.randomId();
+
     const records = await this.getAll();
     records.push(attributes);
     await this.writeAll(records);
@@ -34,6 +34,10 @@ class UsersRepository {
 
   async writeAll(records){
     await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));    
+  }
+
+  randomId(){
+    return crypto.randomBytes(5).toString('hex'); 
   }
 
 }
@@ -45,12 +49,12 @@ const test = async () => {
 
   console.log(`before: ${JSON.stringify(users)}`);
   
-
   await repo.create({ email: "... @ ...", password: "..."});
 
-  const updatedUsers = await repo.getAll(); // Fetch updated users
+  // const updatedUsers = await repo.getAll(); 
 
-  console.log(`after: ${JSON.stringify(updatedUsers)}`); // Log the updated users
+  // console.log(`after: ${JSON.stringify(updatedUsers)}`); 
+  
 }
 
 test();
