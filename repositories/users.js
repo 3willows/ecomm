@@ -32,14 +32,18 @@ class UsersRepository {
     await this.writeAll(records);
   }
 
-  async writeAll(records){
-    await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));    
+  async writeAll(records) {
+    await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));
   }
 
-  randomId(){
-    return crypto.randomBytes(5).toString('hex'); 
+  randomId() {
+    return crypto.randomBytes(5).toString('hex');
   }
 
+  async getOne(id) {
+    const records = await this.getAll();
+    return records.find(record => record.id === id);
+  }
 }
 
 const test = async () => {
@@ -48,13 +52,14 @@ const test = async () => {
   const users = await repo.getAll();
 
   console.log(`before: ${JSON.stringify(users)}`);
-  
-  await repo.create({ email: "... @ ...", password: "..."});
+
+  await repo.create({ email: "... @ ...", password: "..." });
 
   // const updatedUsers = await repo.getAll(); 
 
   // console.log(`after: ${JSON.stringify(updatedUsers)}`); 
-  
+
+  console.log(await repo.getOne("eb9d61fba73"));
 }
 
 test();
