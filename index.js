@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const usersRepo = require('./repositories/users');
-const users = require('./repositories/users');
+const usersRepo = require('./repositories/users.js');
 const cookieSession = require('cookie-session');
 // app is the object we will be modified
 
@@ -70,16 +69,17 @@ app.post('/signin', async (req, res) => {
 
   const user = await usersRepo.getOneBy({ email });
 
-
   if (!user) {
     return res.send(`no such person try again`);
   }
 
-  if (user.password !== password) {
+  const correctPassword = await usersRepo.comparePasswords(user.password, password)
+
+  if (!correctPassword) {
     return res.send(`wrong password try again`);
   }
 
-  return res.send(`you are singed in`)
+  return res.send(`you are signed in`)
 })
 
 app.listen(3000, () => {
