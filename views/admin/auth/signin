@@ -1,0 +1,26 @@
+const layout = require('../../layout')
+
+const getError = (errors, property) => {
+  try {
+    return errors.mapped()[property].msg
+  } catch (errors) {
+    return ''
+  }
+}
+
+module.exports = ({errors}) => {
+  return layout({
+    content: `
+  <div>
+  <form method="POST">
+  <h> SIGN IN PAGE </h> <br>
+  <input name ="email" placeholder="email" />
+  <p> ${getError(errors, 'email')} </p>
+  <input name ="password" placeholder="password" />
+  <p> ${getError(errors, 'password')} </p>
+  <button>Sign In</button>
+  </form>
+</div>
+  `
+  })
+}

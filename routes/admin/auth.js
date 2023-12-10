@@ -2,12 +2,15 @@ const express = require('express')
 const { check, validationResult } = require('express-validator')
 
 const usersRepo = require('../../repositories/users')
-const signUpTemplate = require('../../views/admin/signup')
-const signInTemplate = require('../../views/admin/signin')
+const signUpTemplate = require('../../views/admin/auth/signup')
+const signInTemplate = require('../../views/admin/auth/signin')
+
 const {
   requireEmail,
   requirePassword,
-  requirePasswordConfirmation
+  requirePasswordConfirmation,
+  requireEmailForSignIn,
+  requirePassswordForSignIn
 } = require('./validators')
 
 const router = express.Router()
@@ -21,15 +24,15 @@ router.post(
   [requireEmail, requirePassword, requirePasswordConfirmation],
   async (req, res) => {
     const errors = validationResult(req)
-    console.log(errors)
-    if (!errors.isEmpty()){
-      return res.send(signUpTemplate({ req, errors}));
+    // console.log(errors)
+    if (!errors.isEmpty()) {
+      return res.send(signUpTemplate({ req, errors }))
     }
     if (errors.isEmpty()) {
-      const { email, password, requirePasswordConfirmation } = req.body
-      const user = await usersRepo.create({ email, password})
+      const { email, password } = req.body
+      const user = await usersRepo.create({ email, password })
       req.session.userId = user.id
-      res.send('account created')
+      return res.send('account created')
     }
   }
 )
@@ -43,25 +46,18 @@ router.get('/signin', (req, res) => {
   res.send(signInTemplate())
 })
 
-router.post('/signin', async (req, res) => {
-  const { email, password } = req.body
-
-  const user = await usersRepo.getOneBy({ email })
-
-  if (!user) {
-    return res.send(`no such person try again`)
+router.post(
+  '/signin',
+  [requireEmailForSignIn, requirePassswordForSignIn],
+  async (req, res) => {
+    const errors = validationResult(req);
+    console.log(errors);
+    if (!errors.isEmpty()) {
+      return res.send(signInTemplate({ errors }))
+    }
+    if (errors.isEmpty()) {
+      return res.send(`you are signed in`)
+    }
   }
-
-  const correctPassword = await usersRepo.comparePasswords(
-    user.password,
-    password
-  )
-
-  if (!correctPassword) {
-    return res.send(`wrong password try again`)
-  }
-
-  return res.send(`you are signed in`)
-})
-
+)
 module.exports = router

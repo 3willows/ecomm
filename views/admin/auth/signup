@@ -1,10 +1,10 @@
-const layout = require('../layout')
+const layout = require('../../layout')
 
 const getError = (errors, property) => {
   try {
     return errors.mapped()[property].msg
   } catch (errors) {
-    return ''
+    return '';
   }
 }
 

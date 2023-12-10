@@ -1,5 +1,4 @@
 const { check } = require('express-validator')
-
 const usersRepo = require('../../repositories/users')
 
 module.exports = {
@@ -27,5 +26,30 @@ module.exports = {
         throw new Error('Passwords must match')
       } else return true
     })
-    .withMessage('error with the custom function')
+    .withMessage('error with the custom function'),
+  requireEmailForSignIn: check('email')
+    .trim()
+    .normalizeEmail()
+    .isEmail()
+    .withMessage('must be valid email')
+    .custom(async email => {
+      const user = await usersRepo.getOneBy({ email })
+      if (!user) {
+        throw new Error('Email not found')
+      }
+    })
+    .withMessage('email not found'),
+  requirePassswordForSignIn: check('password')
+    .trim()
+    .custom(async (password, { req }) => {
+      const {email} = req.body
+      // console.log(email);
+      const user = await usersRepo.getOneBy({ email })
+      // console.log(user.password)
+      const passwordValidated = await usersRepo.comparePasswords(user.password, password);
+      if (!passwordValidated) {
+          throw new Error('wrong password')
+      } 
+    })
+    .withMessage('wrong password')
 }
