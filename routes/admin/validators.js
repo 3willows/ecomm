@@ -13,13 +13,16 @@ module.exports = {
         throw new Error('Email in use')
       }
     }),
-  requirePassword: check('password').trim().isLength({ min: 4, max: 20 }),
+  requirePassword: check('password').trim().isLength({ min: 4, max: 20 }).withMessage('Must be between 4 and 20 characters')
+  ,
   requirePasswordConfirmation: check('passwordConfirmation')
     .trim()
     .isLength({ min: 4, max: 20 })
-    .custom((passwordConfirmation, { req }) => {
-      if (passwordConfirmation !== req.body.password) {
-        throw new Error('passwords must match')
-      }
-    })
+    .withMessage('Must be between 4 and 20 characters')
+    // .custom((passwordConfirmation, { req }) => {
+    //   const { password } = req.body;
+    //   if (!password || password !== passwordConfirmation) {
+    //     throw new Error('Passwords must match');
+    // }})
+    // .withMessage('error with the custom function')
 }

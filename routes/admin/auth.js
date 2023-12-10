@@ -1,5 +1,5 @@
 const express = require('express')
-const { validationResult } = require('express-validator')
+const { check, validationResult } = require('express-validator')
 
 const usersRepo = require('../../repositories/users')
 const signUpTemplate = require('../../views/admin/signup')
@@ -21,13 +21,13 @@ router.post(
   [requireEmail, requirePassword, requirePasswordConfirmation],
   async (req, res) => {
     const errors = validationResult(req)
-    // console.log(errors.mapped()["email"].msg)
+    console.log(errors)
     if (!errors.isEmpty()){
       return res.send(signUpTemplate({ req, errors}));
     }
     if (errors.isEmpty()) {
-      const { email, password } = req.body
-      const user = await usersRepo.create({ email, password })
+      const { email, password, requirePasswordConfirmation } = req.body
+      const user = await usersRepo.create({ email, password})
       req.session.userId = user.id
       res.send('account created')
     }
