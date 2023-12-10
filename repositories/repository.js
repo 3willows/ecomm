@@ -15,6 +15,16 @@ module.exports = class Repository {
     }
   }
 
+  async create(attributes) {
+    attributes.id = this.randomId;
+    
+    const records = await this.getAll();
+    records.push(attributes);
+    await this.writeAll(records);
+
+    return attributes;
+  }
+  
   async getAll() {
     // open the file called this.filename
     // read its contents
