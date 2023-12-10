@@ -1,6 +1,6 @@
-const { check } = require('express-validator');
+const { check } = require('express-validator')
 
-const usersRepo = require('../../repositories/users');
+const usersRepo = require('../../repositories/users')
 
 module.exports = {
   requireEmail: check('email')
@@ -13,16 +13,19 @@ module.exports = {
         throw new Error('Email in use')
       }
     }),
-  requirePassword: check('password').trim().isLength({ min: 4, max: 20 }).withMessage('Must be between 4 and 20 characters')
-  ,
+  requirePassword: check('password')
+    .trim()
+    .isLength({ min: 4, max: 20 })
+    .withMessage('Must be between 4 and 20 characters'),
   requirePasswordConfirmation: check('passwordConfirmation')
     .trim()
     .isLength({ min: 4, max: 20 })
     .withMessage('Must be between 4 and 20 characters')
-    // .custom((passwordConfirmation, { req }) => {
-    //   const { password } = req.body;
-    //   if (!password || password !== passwordConfirmation) {
-    //     throw new Error('Passwords must match');
-    // }})
-    // .withMessage('error with the custom function')
+    .custom((passwordConfirmation, { req }) => {
+      const { password } = req.body
+      if (!password || password !== passwordConfirmation) {
+        throw new Error('Passwords must match')
+      } else return true
+    })
+    .withMessage('error with the custom function')
 }
