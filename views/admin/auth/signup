@@ -1,12 +1,5 @@
 const layout = require('../../layout')
-
-const getError = (errors, property) => {
-  try {
-    return errors.mapped()[property].msg
-  } catch (errors) {
-    return '';
-  }
-}
+const {getError} = require('../../../helpers.js');
 
 module.exports = ({ req, errors }) => {
   return layout({

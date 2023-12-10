@@ -46,6 +46,9 @@ module.exports = {
       // console.log(email);
       const user = await usersRepo.getOneBy({ email })
       // console.log(user.password)
+      if (!user){
+        throw new Error('wrong password');
+      }
       const passwordValidated = await usersRepo.comparePasswords(user.password, password);
       if (!passwordValidated) {
           throw new Error('wrong password')
