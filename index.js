@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const cookieSession = require('cookie-session');
-const authRouter = require('./routes/admin/auth')
+const authRouter = require('./routes/admin/auth');
+const productsRouter = require('./routes/admin/products'); 
 
 const app = express();
 
@@ -11,8 +12,9 @@ app.use(cookieSession({
   keys: ['asdfsadfsadf']
 }));
 
-app.use(authRouter);
-
 app.listen(3000, () => {
   console.log('nodemon is listening!');
 })
+
+app.use(authRouter);
+app.use(productsRouter);
