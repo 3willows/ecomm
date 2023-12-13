@@ -11,23 +11,22 @@ const {
   requirePrice
 } = require('./validators')
 
-router.get('/admin/products', (req, res) => {
+router.get('/admin/products/new', (req, res) => {
   res.send(productsNewTemplate({}))
 })
 
-router.post('/admin/products', [requireTitle, requirePrice], async (req, res) => {
+router.post('/admin/products/new', [requireTitle, requirePrice], async (req, res) => {
   const errors = validationResult(req)
-  console.log(errors);
   if (!errors.isEmpty()) {
     return res.send(productsNewTemplate({ errors }))
   }
   if (errors.isEmpty()) {
   const { title, price } = req.body
   await productsRepo.create({ title, price })
-  return res.redirect('/admin/products')
+  return res.redirect('/admin/products/new')
 }})
 
 
-router.get('/admin/products/new', (req, res) => {})
+router.get('/admin/products', (req, res) => {})
 
 module.exports = router
