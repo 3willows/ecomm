@@ -6,9 +6,9 @@ module.exports = ({ errors }) => {
     content: `
     <form method ="POST" enctype = "multipart/form-data" >
     <input placeholder ="Title" name = "title" />
-    // <p class="help is-danger">${getError(errors, 'title')}</p>
+    <p class="help is-danger">${getError(errors, 'title')}</p>
     <input placeholder ="Price" name = "price" />
-    // <p class="help is-danger">${getError(errors, 'price')}</p>
+    <p class="help is-danger">${getError(errors, 'price')}</p>
     <input type = "file" name = "image" />
     <button>Submit</button>
     <form>
