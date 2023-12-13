@@ -32,7 +32,7 @@ router.post(
       const { email, password } = req.body
       const user = await usersRepo.create({ email, password })
       req.session.userId = user.id
-      return res.send('account created')
+      return res.redirect('/signin')
     }
   }
 )

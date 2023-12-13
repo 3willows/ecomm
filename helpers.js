@@ -5,5 +5,5 @@ module.exports = {
     } catch (errors) {
       return ''
     }
-  }  
+  }
 }
