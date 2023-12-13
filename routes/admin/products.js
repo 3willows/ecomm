@@ -17,10 +17,9 @@ router.get('/admin/products', (req, res) => {
 
 router.post('/admin/products', [requireTitle, requirePrice], async (req, res) => {
   const errors = validationResult(req)
-  console.log(errors)
+  console.log(errors);
   if (!errors.isEmpty()) {
-    console.log('error!')
-    // return res.send(signUpTemplate({ req, errors }))
+    return res.send(productsNewTemplate({ errors }))
   }
   if (errors.isEmpty()) {
   const { title, price } = req.body

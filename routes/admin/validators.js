@@ -3,12 +3,14 @@ const usersRepo = require('../../repositories/users')
 
 module.exports = {
   requireTitle: check('title')
-  .trim()
-  .isLength({min: 5, max: 40}),
+    .trim()
+    .isLength({ min: 5, max: 40 })
+    .withMessage('Must be between 5 and 40 characters'),
   requirePrice: check('price')
-  .trim()
-  .toFloat()
-  .isFloat(),
+    .trim()
+    .toFloat()
+    .isFloat()
+    .withMessage('Must be a number'),
   requireEmail: check('email')
     .trim()
     .normalizeEmail()
@@ -49,17 +51,20 @@ module.exports = {
   requirePassswordForSignIn: check('password')
     .trim()
     .custom(async (password, { req }) => {
-      const {email} = req.body
+      const { email } = req.body
       // console.log(email);
       const user = await usersRepo.getOneBy({ email })
       // console.log(user.password)
-      if (!user){
-        throw new Error('wrong password');
+      if (!user) {
+        throw new Error('wrong password')
       }
-      const passwordValidated = await usersRepo.comparePasswords(user.password, password);
+      const passwordValidated = await usersRepo.comparePasswords(
+        user.password,
+        password
+      )
       if (!passwordValidated) {
-          throw new Error('wrong password')
-      } 
+        throw new Error('wrong password')
+      }
     })
     .withMessage('wrong password')
 }

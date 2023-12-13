@@ -1,12 +1,14 @@
-const layout = require('../layout');
-const {getError} = require('../../helpers');
+const layout = require('../layout')
+const { getError } = require('../../helpers')
 
-module.exports =({ errors }) => {
+module.exports = ({ errors }) => {
   return layout({
     content: `
     <form method ="POST">
     <input placeholder ="Title" name = "title" />
+    <p class="help is-danger">${getError(errors, 'title')}</p>
     <input placeholder ="Price" name = "price" />
+    <p class="help is-danger">${getError(errors, 'price')}</p>
     <input type = "file" name "image" />
     <button>Submit</button>
     <form>
