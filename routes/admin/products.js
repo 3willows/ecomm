@@ -3,7 +3,7 @@ const multer = require('multer')
 
 const productsRepo = require('../../repositories/products')
 const productsNewTemplate = require('../../views/products/new')
-const productsTemplate = require('../../views/products/list')
+const productsTemplate = require('../../views/products/index')
 const { requireTitle, requirePrice } = require('./validators')
 
 const router = express.Router()
@@ -34,16 +34,9 @@ router.post(
   }
 )
 
-router.get('/admin/products/list', async (req, res) => {
-  let list = ''
-  const data = await productsRepo.getAll()
-  const items = data.map(obj => [obj.title, obj.price])
-  for (let item of items) {
-    list += `<li> Title: ${item[0]} \t Price:${item[1]}<li>`
-  }
-  if (list) {
-    res.send(productsTemplate(list).replace('is-hidden', ''))
-  }
+router.get('/admin/products/index', async (req, res) => {
+  const products = await productsRepo.getAll()
+  res.send(productsTemplate({products}))
 })
 
 module.exports = router
