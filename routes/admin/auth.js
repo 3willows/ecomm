@@ -50,7 +50,12 @@ router.post(
   [requireEmailForSignIn, requirePassswordForSignIn],
   errorChecker(signInTemplate),
   async (req, res) => {
-    res.redirect( '/admin/products/new')
+    const { email } = req.body
+    const user = await usersRepo.getOneBy({ email })
+    req.session.userId = user.id
+    console.log(req.session.userId)
+    console.log(req.session)
+    res.redirect('/admin/products/new')
   }
 )
 module.exports = router

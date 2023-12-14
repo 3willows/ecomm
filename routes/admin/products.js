@@ -6,6 +6,8 @@ const productsNewTemplate = require('../../views/products/new')
 const productsTemplate = require('../../views/products/index')
 const { requireTitle, requirePrice } = require('./validators')
 
+const usersRepo = require('../../repositories/users')
+
 const router = express.Router()
 
 // The line below does not let req.file show the buffer
@@ -34,9 +36,14 @@ router.post(
   }
 )
 
-router.get('/admin/products/index', async (req, res) => {
+router.get('/admin/products', async (req, res) => {
+  if (!(await usersRepo.getOne(req.session.userId))) {
+    return res.redirect('/signin')
+  }
+  console.log(req.session.userId)
+  console.log(req.session)
   const products = await productsRepo.getAll()
-  res.send(productsTemplate({products}))
+  res.send(productsTemplate({ products }))
 })
 
 module.exports = router
