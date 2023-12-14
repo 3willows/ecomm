@@ -24,7 +24,7 @@ module.exports = ({ errors }) => {
             <div class="field">
               <label class="label">Image</label>            
               <input type="file" name="image" />
-              <p class="help is-danger">${errors}</p>
+              <p class="help is-danger is-hidden" id = "imageInput">${errors}</p>
             </div>
             <br />
             <button class="button is-primary">Create</button>

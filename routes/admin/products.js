@@ -26,11 +26,11 @@ router.post(
   '/admin/products/new',
   upload.single('image'),
   [requireTitle, requirePrice],
-  requireImage(productsNewTemplate),
   errorChecker(productsNewTemplate),
+  requireImage(productsNewTemplate),
   async (req, res) => {
     const { title, price } = req.body
-    const image = req.file.buffer.toString('base64') 
+    const image = req.file.buffer.toString('base64')
     await productsRepo.create({ title, price, image })
     return res.redirect('/admin/products/new')
   }
