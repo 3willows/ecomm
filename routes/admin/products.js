@@ -76,7 +76,7 @@ router.post(
   }
 )
 
-router.get(
+router.post(
   '/admin/products/:id/delete',
   checkUserId('/signin'),
   async (req, res) => {
