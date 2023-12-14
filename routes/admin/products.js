@@ -3,7 +3,7 @@ const multer = require('multer')
 
 const productsRepo = require('../../repositories/products')
 const productsNewTemplate = require('../../views/products/new')
-
+const productsTemplate = require('../../views/products/list')
 const { requireTitle, requirePrice } = require('./validators')
 
 const router = express.Router()
@@ -15,8 +15,6 @@ const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
 
 const { requireImage, errorChecker } = require('../../middlewares')
-
-router.get('/admin/products', (req, res) => {})
 
 router.get('/admin/products/new', (req, res) => {
   res.send(productsNewTemplate({}))
@@ -35,5 +33,17 @@ router.post(
     return res.redirect('/admin/products/new')
   }
 )
+
+router.get('/admin/products/list', async (req, res) => {
+  let list = ''
+  const data = await productsRepo.getAll()
+  const items = data.map(obj => [obj.title, obj.price])
+  for (let item of items) {
+    list += `<li> Title: ${item[0]} \t Price:${item[1]}<li>`
+  }
+  if (list) {
+    res.send(productsTemplate(list).replace('is-hidden', ''))
+  }
+})
 
 module.exports = router
