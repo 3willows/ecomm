@@ -16,15 +16,18 @@ const {
 
 const router = express.Router()
 
-router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.urlencoded({ extended: true }))
+
+const { errorChecker } = require('../../middlewares')
 
 router.get('/signup', (req, res) => {
-  res.send(signUpTemplate({ req }))
+  res.send(signUpTemplate({}))
 })
 
 router.post(
   '/signup',
   [requireEmail, requirePassword, requirePasswordConfirmation],
+  errorChecker(signUpTemplate),
   async (req, res) => {
     const errors = validationResult(req)
     // console.log(errors)
@@ -53,8 +56,8 @@ router.post(
   '/signin',
   [requireEmailForSignIn, requirePassswordForSignIn],
   async (req, res) => {
-    const errors = validationResult(req);
-    console.log(errors);
+    const errors = validationResult(req)
+    console.log(errors)
     if (!errors.isEmpty()) {
       return res.send(signInTemplate({ errors }))
     }
