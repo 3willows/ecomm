@@ -11,7 +11,7 @@ const router = express.Router()
 // The line below does not let req.file show the buffer
 // const uploadDisk= multer({ dest: 'uploads/' })
 
-// this will save the thing instead as a string in the products.json
+// The line below will save the thing instead as a string in the products.json
 const upload = multer({ storage: multer.memoryStorage() })
 
 const { requireImage, errorChecker } = require('../../middlewares')
