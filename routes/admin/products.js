@@ -1,15 +1,24 @@
 const express = require('express')
-const { check, validationResult } = require('express-validator')
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
-
-const router = express.Router()
+const { validationResult } = require('express-validator')
+const multer = require('multer')
 
 const productsRepo = require('../../repositories/products')
 const productsNewTemplate = require('../../views/products/new')
 
 const { requireTitle, requirePrice } = require('./validators')
+
+const router = express.Router()
+
+// The line below does not let req.file show the buffer
+// const uploadDisk= multer({ dest: 'uploads/' })
+
+// this will save the thing instead as a string in the products.json
+const upload = multer({ storage: multer.memoryStorage() });
+
+// does this line grammatical?  Keep or just delete?
 const { error } = require('console')
+
+router.get('/admin/products', (req, res) => {})
 
 router.get('/admin/products/new', (req, res) => {
   res.send(productsNewTemplate({}))
@@ -21,18 +30,20 @@ router.post(
   [requireTitle, requirePrice],
   async (req, res) => {
     const errors = validationResult(req)
-    console.log(errors);
+    // console.log(errors)
+    // console.log(req.body)
+    console.log(req.file)
     if (!errors.isEmpty()) {
       return res.send(productsNewTemplate({ errors }))
     }
     if (errors.isEmpty()) {
       const { title, price } = req.body
-      await productsRepo.create({ title, price })
+      const { buffer } = req.file
+      const binData = buffer.toString('base64')
+      await productsRepo.create({ title, price, binData})
       return res.redirect('/admin/products/new')
     }
   }
 )
-
-router.get('/admin/products', (req, res) => {})
 
 module.exports = router
