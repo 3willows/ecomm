@@ -29,20 +29,12 @@ router.post(
   upload.single('image'),
   [requireTitle, requirePrice],
   async (req, res) => {
-    const errors = validationResult(req)
-    // console.log(errors)
-    // console.log(req.body)
-    console.log(req.file)
-    if (!errors.isEmpty()) {
-      return res.send(productsNewTemplate({ errors }))
-    }
-    if (errors.isEmpty()) {
+
       const { title, price } = req.body
       const { buffer } = req.file
       const binData = buffer.toString('base64')
       await productsRepo.create({ title, price, binData})
       return res.redirect('/admin/products/new')
-    }
   }
 )
 
