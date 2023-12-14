@@ -32,7 +32,7 @@ router.post(
     const { title, price } = req.body
     const image = req.file.buffer.toString('base64')
     await productsRepo.create({ title, price, image })
-    return res.redirect('/admin/products/new')
+    return res.redirect('/admin/products')
   }
 )
 
@@ -42,5 +42,15 @@ router.get('/admin/products', checkUserId('/signin'), async (req, res) => {
   const products = await productsRepo.getAll()
   res.send(productsTemplate({ products }))
 })
+
+router.get(
+  '/admin/products/:id/edit',
+  checkUserId('/signin'),
+  async (req, res) => {
+    const productId = req.params.id
+    const product = productsRepo.getOneBy(productId)
+    res.send('hello!')
+  }
+)
 
 module.exports = router
