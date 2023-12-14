@@ -1,5 +1,4 @@
 const express = require('express')
-const { validationResult } = require('express-validator')
 const multer = require('multer')
 
 const productsRepo = require('../../repositories/products')
@@ -13,10 +12,9 @@ const router = express.Router()
 // const uploadDisk= multer({ dest: 'uploads/' })
 
 // this will save the thing instead as a string in the products.json
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage() })
 
-// does this line grammatical?  Keep or just delete?
-const { error } = require('console')
+const { errorChecker } = require('../../middlewares')
 
 router.get('/admin/products', (req, res) => {})
 
@@ -28,13 +26,13 @@ router.post(
   '/admin/products/new',
   upload.single('image'),
   [requireTitle, requirePrice],
+  errorChecker(productsNewTemplate),
   async (req, res) => {
-
-      const { title, price } = req.body
-      const { buffer } = req.file
-      const binData = buffer.toString('base64')
-      await productsRepo.create({ title, price, binData})
-      return res.redirect('/admin/products/new')
+    const { title, price } = req.body
+    const { buffer } = req.file
+    const binData = buffer.toString('base64')
+    await productsRepo.create({ title, price, binData })
+    return res.redirect('/admin/products/new')
   }
 )
 
