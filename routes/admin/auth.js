@@ -29,17 +29,10 @@ router.post(
   [requireEmail, requirePassword, requirePasswordConfirmation],
   errorChecker(signUpTemplate),
   async (req, res) => {
-    const errors = validationResult(req)
-    // console.log(errors)
-    if (!errors.isEmpty()) {
-      return res.send(signUpTemplate({ req, errors }))
-    }
-    if (errors.isEmpty()) {
-      const { email, password } = req.body
-      const user = await usersRepo.create({ email, password })
-      req.session.userId = user.id
-      return res.redirect('/signin')
-    }
+    const { email, password } = req.body
+    const user = await usersRepo.create({ email, password })
+    req.session.userId = user.id
+    return res.redirect('/signin')
   }
 )
 
@@ -55,15 +48,9 @@ router.get('/signin', (req, res) => {
 router.post(
   '/signin',
   [requireEmailForSignIn, requirePassswordForSignIn],
+  errorChecker(signInTemplate),
   async (req, res) => {
-    const errors = validationResult(req)
-    console.log(errors)
-    if (!errors.isEmpty()) {
-      return res.send(signInTemplate({ errors }))
-    }
-    if (errors.isEmpty()) {
-      return res.send(`you are signed in`)
-    }
+    res.redirect( '/admin/products/new')
   }
 )
 module.exports = router
