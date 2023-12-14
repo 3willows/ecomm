@@ -18,7 +18,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 const { requireImage, errorChecker } = require('../../middlewares')
 
-router.get('/admin/products/new', (req, res) => {
+router.get('/admin/products/new', checkUserId('/signin'), (req, res) => {
   res.send(productsNewTemplate({}))
 })
 
