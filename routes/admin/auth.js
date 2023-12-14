@@ -1,6 +1,7 @@
 const express = require('express')
-const { check, validationResult } = require('express-validator')
+const { validationResult } = require('express-validator')
 
+const bodyParser = require('body-parser')
 const usersRepo = require('../../repositories/users')
 const signUpTemplate = require('../../views/admin/auth/signup')
 const signInTemplate = require('../../views/admin/auth/signin')
@@ -14,6 +15,8 @@ const {
 } = require('./validators')
 
 const router = express.Router()
+
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get('/signup', (req, res) => {
   res.send(signUpTemplate({ req }))
