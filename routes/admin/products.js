@@ -6,7 +6,7 @@ const productsNewTemplate = require('../../views/products/new')
 const productsTemplate = require('../../views/products/index')
 const { requireTitle, requirePrice } = require('./validators')
 
-const usersRepo = require('../../repositories/users')
+const { checkUserId } = require('../../middlewares')
 
 const router = express.Router()
 
@@ -36,10 +36,7 @@ router.post(
   }
 )
 
-router.get('/admin/products', async (req, res) => {
-  if (!(await usersRepo.getOne(req.session.userId))) {
-    return res.redirect('/signin')
-  }
+router.get('/admin/products', checkUserId('/signin'), async (req, res) => {
   console.log(req.session.userId)
   console.log(req.session)
   const products = await productsRepo.getAll()

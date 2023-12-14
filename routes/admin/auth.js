@@ -6,6 +6,8 @@ const usersRepo = require('../../repositories/users')
 const signUpTemplate = require('../../views/admin/auth/signup')
 const signInTemplate = require('../../views/admin/auth/signin')
 
+const { errorChecker } = require('../../middlewares')
+
 const {
   requireEmail,
   requirePassword,
@@ -17,8 +19,6 @@ const {
 const router = express.Router()
 
 router.use(bodyParser.urlencoded({ extended: true }))
-
-const { errorChecker } = require('../../middlewares')
 
 router.get('/signup', (req, res) => {
   res.send(signUpTemplate({}))
