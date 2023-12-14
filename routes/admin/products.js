@@ -14,7 +14,7 @@ const router = express.Router()
 // this will save the thing instead as a string in the products.json
 const upload = multer({ storage: multer.memoryStorage() })
 
-const { errorChecker } = require('../../middlewares')
+const { requireImage, errorChecker } = require('../../middlewares')
 
 router.get('/admin/products', (req, res) => {})
 
@@ -26,12 +26,12 @@ router.post(
   '/admin/products/new',
   upload.single('image'),
   [requireTitle, requirePrice],
+  requireImage(productsNewTemplate),
   errorChecker(productsNewTemplate),
   async (req, res) => {
     const { title, price } = req.body
-    const { buffer } = req.file
-    const binData = buffer.toString('base64')
-    await productsRepo.create({ title, price, binData })
+    const image = req.file.buffer.toString('base64') 
+    await productsRepo.create({ title, price, image })
     return res.redirect('/admin/products/new')
   }
 )
