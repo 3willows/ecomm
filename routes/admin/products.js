@@ -17,6 +17,7 @@ const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
 
 const { requireImage, errorChecker } = require('../../middlewares')
+const products = require('../../repositories/products')
 
 router.get('/admin/products/new', checkUserId('/signin'), (req, res) => {
   res.send(productsNewTemplate({}))
@@ -59,9 +60,18 @@ router.post(
   requireImage(productsNewTemplate),
   async (req, res) => {
     const id = req.params.id
+    const product = await productsRepo.getOneBy(id);
+   
+    if (!product){
+      return res.send('Product not found')
+    }
+    
     const { title, price } = req.body
     const image = req.file.buffer.toString('base64')
-    await productsRepo.update(id, { title, price, image })
+    try {await productsRepo.update(id, { title, price, image })}
+    catch (err){
+      return res.send('update failed')
+    }
     return res.redirect('/admin/products')
   }
 )
@@ -69,19 +79,11 @@ router.post(
 router.get(
   '/admin/products/:id/delete',
   checkUserId('/signin'),
-  (req, res) => {
-    res.send(productsNewTemplate({}))
-  }
-)
-
-router.post(
-  '/admin/products/:id/delete',
   async (req, res) => {
     const id = req.params.id
-    await productsRepo.delete(id)
-    return res.redirect('/admin/products')
-  }
+    await productsRepo.delete(id)    
+    const products = await productsRepo.getAll()
+    res.send(productsTemplate({ products }))}
 )
-
 
 module.exports = router
