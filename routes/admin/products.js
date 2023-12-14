@@ -24,6 +24,7 @@ router.get('/admin/products/new', checkUserId('/signin'), (req, res) => {
 
 router.post(
   '/admin/products/new',
+  checkUserId('/signin'),
   upload.single('image'),
   [requireTitle, requirePrice],
   errorChecker(productsNewTemplate),
@@ -37,8 +38,6 @@ router.post(
 )
 
 router.get('/admin/products', checkUserId('/signin'), async (req, res) => {
-  console.log(req.session.userId)
-  console.log(req.session)
   const products = await productsRepo.getAll()
   res.send(productsTemplate({ products }))
 })
@@ -46,11 +45,43 @@ router.get('/admin/products', checkUserId('/signin'), async (req, res) => {
 router.get(
   '/admin/products/:id/edit',
   checkUserId('/signin'),
-  async (req, res) => {
-    const productId = req.params.id
-    const product = productsRepo.getOneBy(productId)
-    res.send('hello!')
+  (req, res) => {
+    res.send(productsNewTemplate({}))
   }
 )
+
+router.post(
+  '/admin/products/:id/edit',
+  checkUserId('/signin'),
+  upload.single('image'),
+  [requireTitle, requirePrice],
+  errorChecker(productsNewTemplate),
+  requireImage(productsNewTemplate),
+  async (req, res) => {
+    const id = req.params.id
+    const { title, price } = req.body
+    const image = req.file.buffer.toString('base64')
+    await productsRepo.update(id, { title, price, image })
+    return res.redirect('/admin/products')
+  }
+)
+
+router.get(
+  '/admin/products/:id/delete',
+  checkUserId('/signin'),
+  (req, res) => {
+    res.send(productsNewTemplate({}))
+  }
+)
+
+router.post(
+  '/admin/products/:id/delete',
+  async (req, res) => {
+    const id = req.params.id
+    await productsRepo.delete(id)
+    return res.redirect('/admin/products')
+  }
+)
+
 
 module.exports = router
