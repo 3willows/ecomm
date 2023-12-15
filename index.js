@@ -1,7 +1,8 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const authRouter = require('./routes/admin/auth');
-const productsRouter = require('./routes/admin/products'); 
+const productsAdminRouter = require('./routes/admin/productsAdmin'); 
+const productsPublicRouter = require('./routes/productsPublic'); 
 
 const app = express();
 
@@ -15,4 +16,5 @@ app.listen(3000, () => {
 })
 
 app.use(authRouter);
-app.use(productsRouter);
+app.use(productsAdminRouter);
+app.use(productsPublicRouter);

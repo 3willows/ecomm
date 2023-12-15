@@ -53,9 +53,9 @@ router.post(
     const { email } = req.body
     const user = await usersRepo.getOneBy({ email })
     req.session.userId = user.id
-    console.log(req.session.userId)
-    console.log(req.session)
-    res.redirect('/admin/products/new')
+    // console.log(req.session.userId)
+    // console.log(req.session)
+    res.redirect('/admin/products')
   }
 )
 module.exports = router

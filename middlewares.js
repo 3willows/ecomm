@@ -16,8 +16,8 @@ module.exports = {
     return (req, res, next) => {
       if (!req.file) {
         const errors = `Image is required! `
-        console.log('triggered')
-        console.log(templateFunc({ errors }))
+        // console.log('triggered')
+        // console.log(templateFunc({ errors }))
         return res.send(templateFunc({ errors }).replace('is-hidden', ''))
       }
       next()
