@@ -15,4 +15,8 @@ router.get('/products/public', async (req, res) => {
   res.send(productsPublicTemplate ({products}))
 })
 
+router.post('/cart/products', async (req, res) => {
+  res.send("hello!")
+})
+
 module.exports = router
