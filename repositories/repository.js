@@ -17,9 +17,6 @@ module.exports = class Repository {
 
   async create(attributes) {
     attributes.id = this.randomId();
-   
-    // console.log("HELLOO?")
-    // console.log(attributes.id);
     const records = await this.getAll();
     records.push(attributes);
     await this.writeAll(records);
