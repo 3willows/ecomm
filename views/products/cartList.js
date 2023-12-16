@@ -15,7 +15,12 @@ module.exports = products => {
               </div>
               <figure>
               <img src="data:image/png;base64, ${product.image}"/>
-            </figure>
+              <td>
+              <form method = 'POST' action = "/cart/${product.id}/delete">
+              <button class="button is-links">Delete</button>
+              </form>
+              </td>
+              </figure>
             <footer class="card-footer">
               </form>
             </footer>

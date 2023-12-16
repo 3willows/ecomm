@@ -38,20 +38,44 @@ router.get('/cart', async (req, res) => {
     res.redirect('/products/public')
   }
   const cartView = []
-  if (cartForUser ) {
+  if (cartForUser) {
     if (cartForUser.products)
-    for (let entry of cartForUser.products) {
-      const product = await productsRepo.getOne(entry[0])
-      const title = product.title
-      const image = product.image
-      const price = product.price
-      const quantity = entry[1]
-      const cartViewEntry = { title, price, quantity, image }
-      cartView.push(cartViewEntry)
-    }
-  res.send(cartPublicTemplate(cartView))
+      for (let entry of cartForUser.products) {
+        // console.log(entry[0])
+        const product = await productsRepo.getOne(entry[0])
+        // console.log(product)
+        const id = entry[0]
+        const title = product.title
+        const image = product.image
+        const price = product.price
+        const quantity = entry[1]
+        const cartViewEntry = { id, title, price, quantity, image }
+        cartView.push(cartViewEntry)
+      }
+    res.send(cartPublicTemplate(cartView))
   }
+})
 
+router.post('/cart/:id/delete', async (req, res) => {
+  const productId = req.params.id
+  const cartForUser = await cartRepo.getOne(req.session.id)
+  if (!cartForUser) {
+    console.log(chalk.red('no session yet'))
+    res.redirect('/cart')
+  }
+  if (cartForUser) {
+    if (cartForUser.products) {
+      // console.log(cartForUser.products)
+      // console.log(productId)
+      console.log(cartForUser.products.findIndex(arr => arr[0] === productId))
+      const products =  cartForUser.products
+      const index = products.findIndex(arr => arr[0] === productId)
+      products.splice(index, 1)
+      // console.log(cartForUser.products)
+      await cartRepo.update(req.session.id, { products })
+    }
+    res.redirect('/cart')
+  }
 })
 
 module.exports = router
