@@ -59,6 +59,7 @@ module.exports = class Repository {
     if (!record) {
       throw new Error(`Record with id ${id} not found`);
     }
+    console.log('hihi!', attributes)
     Object.assign(record, attributes);
     await this.writeAll(records);
   }
