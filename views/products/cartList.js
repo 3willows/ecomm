@@ -16,7 +16,7 @@ module.exports = CartView => {
               <h3 class="subtitle">${product.title}</h3>
               <h5 class="title text-center"> Price: $${product.price}</h5>
               <h5 class="title text-center"> Quantity: ${product.quantity}</h5>           
-              <h5 class="title text-center"> Sub--total ${product.quantity * product.price}</h5>           
+              <h5 class="title text-center"> Sub-total ${product.quantity * product.price}</h5>           
               </div>
               <figure>
               <img src="data:image/png;base64, ${product.image}"/>
